@@ -19,18 +19,42 @@ print('Converting to JSON...')
 
 datalist = []
 
+def convertcoords(str):
+    print(str)
+    c = str.strip('[]').split(', ')
+    print(c)
+    lon = c[0]
+    lat = c[1]
+    coords = {
+        "lon": lon,
+        "lat": lat
+    }
+    print(coords)
+    return coords
+def skip():
+    return
+
 for sheet in workbook.worksheets:
     titlerow = sheet[1]
     colnames = []
     for cell in titlerow:
         colnames.append(cell.value)
     for row in sheet.iter_rows(min_row=2):
-        data = OrderedDict()
-        c = 0
-        while c < len(colnames):
-            data[colnames[c]] = row[c].value
-            c += 1
-        datalist.append(data)
+        if row[0] == ' ':
+            skip()
+        else:
+            data = OrderedDict()
+            c = 0
+            while c < len(colnames):
+                if colnames[c] == 'Coordinates':
+                    if row[c].value == ' ':
+                        data[colnames[c]] = row[c].value
+                    else:
+                        data[colnames[c]] = convertcoords(row[c].value)
+                else:
+                    data[colnames[c]] = row[c].value
+                c += 1
+            datalist.append(data)
 
 j = json.dumps(datalist)
 
@@ -40,3 +64,5 @@ split_filename = os.path.splitext(filename)
 new_filename = split_filename[0] + '.json'
 with open(new_filename, 'w') as f:
     f.write(j)
+
+print("Done!")
