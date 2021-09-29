@@ -40,7 +40,7 @@ for sheet in workbook.worksheets:
     for cell in titlerow:
         colnames.append(cell.value)
     for row in sheet.iter_rows(min_row=2):
-        if row[0] == ' ':
+        if row[0] == '  ':
             skip()
         else:
             data = OrderedDict()
