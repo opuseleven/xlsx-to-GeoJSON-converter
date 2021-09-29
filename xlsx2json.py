@@ -65,6 +65,8 @@ for sheet in workbook.worksheets:
 for obj in datalist:
     if obj['Name'] == None:
         datalist.remove(obj)
+    elif obj['Coordinates'] == ' ':
+        datalist.remove(obj)
 
 j = json.dumps(datalist)
 
