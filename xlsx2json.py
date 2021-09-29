@@ -56,6 +56,10 @@ for sheet in workbook.worksheets:
                 c += 1
             datalist.append(data)
 
+for obj in datalist:
+    if obj['Name'] == None:
+        datalist.remove(obj)
+
 j = json.dumps(datalist)
 
 print('Writing JSON file...')
