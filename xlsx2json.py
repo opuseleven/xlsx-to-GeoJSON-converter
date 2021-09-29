@@ -37,6 +37,7 @@ def skip():
 for sheet in workbook.worksheets:
     state_data = []
     state = sheet.title
+    print(state)
     titlerow = sheet[1]
     colnames = []
     for cell in titlerow:
@@ -59,12 +60,10 @@ for sheet in workbook.worksheets:
                     data[colnames[c]] = row[c].value
                 c += 1
             state_data.append(data)
-    datalist[state]= state_data
-
-# for state in datalist:
-#    for obj in state:
-#        if obj['Coordinates'] == None:
-#            datalist.remove(obj)
+    for obj in state_data:
+        if obj['Name'] == None:
+            state_data.remove(obj)
+    datalist[state] = state_data
 
 j = json.dumps(datalist)
 
