@@ -17,7 +17,7 @@ workbook = openpyxl.load_workbook(path)
 
 print('Converting to JSON...')
 
-datalist = []
+datalist = {}
 
 def convertcoords(str):
     print(str)
@@ -35,30 +35,36 @@ def skip():
     return
 
 for sheet in workbook.worksheets:
+    state_data = []
+    state = sheet.title
     titlerow = sheet[1]
     colnames = []
     for cell in titlerow:
         colnames.append(cell.value)
     for row in sheet.iter_rows(min_row=2):
-        if row[0] == '  ':
+        if row[0] == None:
             skip()
         else:
             data = OrderedDict()
             c = 0
             while c < len(colnames):
                 if colnames[c] == 'Coordinates':
-                    if row[c].value == ' ':
+                    if row[c].value == None:
+                        data[colnames[c]] = row[c].value
+                    elif row[c].value == ' ':
                         data[colnames[c]] = row[c].value
                     else:
                         data[colnames[c]] = convertcoords(row[c].value)
                 else:
                     data[colnames[c]] = row[c].value
                 c += 1
-            datalist.append(data)
+            state_data.append(data)
+    datalist[state]= state_data
 
-for obj in datalist:
-    if obj['Name'] == None:
-        datalist.remove(obj)
+# for state in datalist:
+#    for obj in state:
+#        if obj['Coordinates'] == None:
+#            datalist.remove(obj)
 
 j = json.dumps(datalist)
 
