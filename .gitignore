@@ -1,2 +1,2 @@
-/testdata.xlsx
-/testdata.json
+*.xlsx
+*.json
