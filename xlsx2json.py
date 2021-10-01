@@ -32,43 +32,32 @@ def convertcoords(str):
     print(coords)
     return coords
 
-def skip():
-    return
-
 for sheet in workbook.worksheets:
     state = sheet.title
     titlerow = sheet[1]
     colnames = []
+    counter = 0
+    coordscol = -1
     for cell in titlerow:
         colnames.append(cell.value)
+        if cell.value == 'Coordinates':
+            coordscol = counter
+        counter += 1
+    if coordscol == -1:
+        print("Error: Couldn't identify \"Coordinates\" column.")
+        break
     for row in sheet.iter_rows(min_row=2):
-        if row[0] == None:
-            skip()
-        elif row[0] == '    ':
-            skip()
-        else:
-            data = OrderedDict()
-            c = 0
-            while c < len(colnames):
-                if colnames[c] == 'Coordinates':
-                    if row[c].value == None:
-                        data[colnames[c]] = row[c].value
-                    elif row[c].value == ' ':
-                        data[colnames[c]] = row[c].value
-                    else:
+        if row[0].value:
+            if not row[coordscol].value.startswith(' '):
+                data = OrderedDict()
+                c = 0
+                while c < len(colnames):
+                    if c == coordscol:
                         data[colnames[c]] = convertcoords(row[c].value)
-                else:
-                    data[colnames[c]] = row[c].value
-                c += 1
-            datalist.append(data)
-
-for obj in datalist:
-    if obj['Name'] == None:
-        datalist.remove(obj)
-    elif obj['Coordinates'] == False:
-        datalist.remove(obj)
-    elif obj['Address'] == False:
-        datalist.remove(obj)
+                    else:
+                        data[colnames[c]] = row[c].value
+                    c += 1
+                datalist.append(data)
 
 j = json.dumps(datalist)
 
