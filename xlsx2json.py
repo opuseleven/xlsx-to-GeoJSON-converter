@@ -20,16 +20,13 @@ print('Converting to JSON...')
 datalist = []
 
 def convertcoords(str):
-    print(str)
     c = str.strip('[]').split(', ')
-    print(c)
     lon = c[0]
     lat = c[1]
     coords = {
         "lon": lon,
         "lat": lat
     }
-    print(coords)
     return coords
 
 for sheet in workbook.worksheets:
@@ -48,16 +45,17 @@ for sheet in workbook.worksheets:
         break
     for row in sheet.iter_rows(min_row=2):
         if row[0].value:
-            if not row[coordscol].value.startswith(' '):
-                data = OrderedDict()
-                c = 0
-                while c < len(colnames):
-                    if c == coordscol:
-                        data[colnames[c]] = convertcoords(row[c].value)
-                    else:
-                        data[colnames[c]] = row[c].value
-                    c += 1
-                datalist.append(data)
+            if row[coordscol].value:
+                if not row[coordscol].value.startswith(' '):
+                    data = OrderedDict()
+                    c = 0
+                    while c < len(colnames):
+                        if c == coordscol:
+                            data[colnames[c]] = convertcoords(row[c].value)
+                        else:
+                            data[colnames[c]] = row[c].value
+                        c += 1
+                    datalist.append(data)
 
 j = json.dumps(datalist)
 
