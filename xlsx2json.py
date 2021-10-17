@@ -19,7 +19,7 @@ print(path)
 
 workbook = openpyxl.load_workbook(path)
 
-print('Converting to JSON...')
+print('Converting to GeoJSON...')
 
 datalist = []
 
@@ -52,13 +52,18 @@ for sheet in workbook.worksheets:
             if row[coordscol].value:
                 if not row[coordscol].value.startswith(' '):
                     data = OrderedDict()
+                    data['type'] = "Feature"
+                    data['geometry'] = {
+                    "type": "Point",
+                    "coordinates": convertcoords(row[coordscol].value)
+                    }
+                    propsdata = OrderedDict()
                     c = 0
                     while c < len(colnames):
-                        if c == coordscol:
-                            data[colnames[c]] = convertcoords(row[c].value)
-                        else:
-                            data[colnames[c]] = row[c].value
+                        if c != coordscol:
+                            propsdata[colnames[c]] = row[c].value
                         c += 1
+                    data['properties'] = propsdata
                     datalist.append(data)
 
 j = json.dumps(datalist)
