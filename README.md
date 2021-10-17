@@ -1,2 +1,2 @@
 # xlsx-to-json-converter
-Python script to convert an xlsx excel file to json format.
+Python script to convert an xlsx excel file to GeoJSON format.
